@@ -1,45 +1,92 @@
 ---
 layout: post
-title: "Testing Readability with a Bunch of Text"
-date: 2012-05-22
+title: "how to use build blog based jekyll"
+date: 2016-04-26
 excerpt: "A ton of text to test readability."
-tags: [sample post, readability, test]
+tags: [jekyll,ruby]
 comments: true
 ---
 
-Portland in shoreditch Vice, labore typewriter pariatur hoodie fap sartorial Austin. Pinterest literally occupy Schlitz forage. Odio ad blue bottle vinyl, 90's narwhal commodo bitters pour-over nostrud. Ugh est hashtag in, fingerstache adipisicing laboris esse Pinterest shabby chic Portland. Shoreditch bicycle rights anim, flexitarian laboris put a bird on it vinyl cupidatat narwhal. Hashtag artisan skateboard, flannel Bushwick nesciunt salvia aute fixie do plaid post-ironic dolor McSweeney's. Cliche pour-over chambray nulla four loko skateboard sapiente hashtag.
+##为什么是Jekyll+github？
+其官网首页 上的描述是： Transform your plain text into static websites and blogs。Jekyll将原始文本根据一定规则转换成静态的网页和博客。但这个转换并不是简单的字符串替换就了事了，而是首先读取各个文件中的内容，根据配置文件中描述的参数在内存中构建一个巨大的对象存储整个博客的信息，然后再将这些信息根据配置文件中定义的输出方式来生成具体的HTML文件。整个项目是由Ruby写的，所以若需要在本地调试则需要安装Ruby。
 
-Vero laborum commodo occupy. Semiotics voluptate mumblecore pug. Cosby sweater ullamco quinoa ennui assumenda, sapiente occupy delectus lo-fi. Ea fashion axe Marfa cillum aliquip. Retro Bushwick keytar cliche. Before they sold out sustainable gastropub Marfa readymade, ethical Williamsburg skateboard brunch qui consectetur gentrify semiotics. Mustache cillum irony, fingerstache magna pour-over keffiyeh tousled selfies.
+使用Jekyll搭建博客有几个好处：
+1. 不需要使用额外的数据库
+2. 支持markdown，liquid，以及原始的html、css
+3. 可以定义模板，并在模板上进行代码复用
+4. github对其支持，可以直接在github上搭建，可以继承github上的各种好处（版本控制，免费，无流量限制）
+5. 有很多扩展插件（但是在github上用不了，github不允许用户使用扩展插件，大概是出于安全性考虑）
 
-## Cupidatat 90's lo-fi authentic try-hard
+当然缺点也有很多：
+1. 生成的是静态网页，无法动态加载，若需要外部服务如评论，只能使用类似于disquz，多说这样的外部插件了
+2. 仅仅适合小型网站，不适合大中型网站
+3. 没有数据库及服务端的逻辑
 
-In pug Portland incididunt mlkshk put a bird on it vinyl quinoa. Terry Richardson shabby chic +1, scenester Tonx excepteur tempor fugiat voluptate fingerstache aliquip nisi next level. Farm-to-table hashtag Truffaut, Odd Future ex meggings gentrify single-origin coffee try-hard 90's.
+由此可见，用来搭建个人博客相当合适（github版本控制，免费，无流量限制，支持markdown，无需关心服务器端逻辑和数据库）
+##本地安装jekyll
 
-* Sartorial hoodie
-* Labore viral forage
-* Tote bag selvage
-* DIY exercitation et id ugh tumblr church-key
 
-Incididunt umami sriracha, ethical fugiat VHS ex assumenda yr irure direct trade. Marfa Truffaut bicycle rights, kitsch placeat Etsy kogi asymmetrical. Beard locavore flexitarian, kitsch photo booth hoodie plaid ethical readymade leggings yr.
+- 安装ruby and gem
 
-Aesthetic odio dolore, meggings disrupt qui readymade stumptown brunch Terry Richardson pour-over gluten-free. Banksy american apparel in selfies, biodiesel flexitarian organic meh wolf quinoa gentrify banjo kogi. Readymade tofu ex, scenester dolor umami fingerstache occaecat fashion axe Carles jean shorts minim. Keffiyeh fashion axe nisi Godard mlkshk dolore. Lomo you probably haven't heard of them eu non, Odd Future Truffaut pug keytar meggings McSweeney's Pinterest cred. Etsy literally aute esse, eu bicycle rights qui meggings fanny pack. Gentrify leggings pug flannel duis.
+       从[RubyInstaller](http://rubyinstaller.org/downloads/ "rubyinstaller")下载ruby，如果有经验的可以直接从Ruby官网进行下载，前者安装比较无脑，会有一些额外的依赖包进行安装，版本也较低，而Ruby官网的版本则相对较高，但是没有额外的依赖包。下载的时候版本选较高一些的，否则会有bug，我选择的是2.0.0p353(2013-11-22)。安装的时候记得勾选添加环境变量。
+       安装devkit，RubyInstaller页面中往下拉就能看到。选择自己版本的Ruby对应的devkit，下载并解压，然后执行:
 
-## Forage occaecat cardigan qui
+       cd devkit
 
-Fashion axe hella gastropub lo-fi kogi 90's aliquip +1 veniam delectus tousled. Cred sriracha locavore gastropub kale chips, iPhone mollit sartorial. Anim dolore 8-bit, pork belly dolor photo booth aute flannel small batch. Dolor disrupt ennui, tattooed whatever salvia Banksy sartorial roof party selfies raw denim sint meh pour-over. Ennui eu cardigan sint, gentrify iPhone cornhole.
+       ruby dk.rb init
 
-> Whatever velit occaecat quis deserunt gastropub, leggings elit tousled roof party 3 wolf moon kogi pug blue bottle ea. Fashion axe shabby chic Austin quinoa pickled laborum bitters next level, disrupt deep v accusamus non fingerstache.
+       ruby dk.rb install
+        这样就完成ruby环境的安装了
 
-Tote bag asymmetrical elit sunt. Occaecat authentic Marfa, hella McSweeney's next level irure veniam master cleanse. Sed hoodie letterpress artisan wolf leggings, 3 wolf moon commodo ullamco. Anim occupy ea labore Terry Richardson. Tofu ex master cleanse in whatever pitchfork banh mi, occupy fugiat fanny pack Austin authentic. Magna fugiat 3 wolf moon, labore McSweeney's sustainable vero consectetur. Gluten-free disrupt enim, aesthetic fugiat jean shorts trust fund keffiyeh magna try-hard.
+        安装gem，这个也可以去gem的官网进行下载，然后直接安装就行了，安装完成后使用gem -v查看一下是否安装成功。我安装的是2.1.11版本
+        gem是可以选择源的，默认的源有点慢，可以使用ruby.taobao.org的源，方便快捷
+        查看当前源
+        D:\node\jekyll>gem sources list
+        *** CURRENT SOURCES ***
 
-## Hoodie Duis
+        https://rubygems.org/
 
-Actually salvia consectetur, hoodie duis lomo YOLO sunt sriracha. Aute pop-up brunch farm-to-table odio, salvia irure occaecat. Sriracha small batch literally skateboard. Echo Park nihil hoodie, aliquip forage artisan laboris. Trust fund reprehenderit nulla locavore. Stumptown raw denim kitsch, keffiyeh nulla twee dreamcatcher fanny pack ullamco 90's pop-up est culpa farm-to-table. Selfies 8-bit do pug odio.
+        D:\node\jekyll>
+       添加新源
 
-### Thundercats Ho!
+        gem sources -a http://ruby.taobao.org/
+       删除默认源
 
-Fingerstache thundercats Williamsburg, deep v scenester Banksy ennui vinyl selfies mollit biodiesel duis odio pop-up. Banksy 3 wolf moon try-hard, sapiente enim stumptown deep v ad letterpress. Squid beard brunch, exercitation raw denim yr sint direct trade. Raw denim narwhal id, flannel DIY McSweeney's seitan. Letterpress artisan bespoke accusamus, meggings laboris consequat Truffaut qui in seitan. Sustainable cornhole Schlitz, twee Cosby sweater banh mi deep v forage letterpress flannel whatever keffiyeh. Sartorial cred irure, semiotics ethical sed blue bottle nihil letterpress.
+        gem sources --remove https://rubygems.org/
+       再次查看的时候保证只有http://ruby.taobao.org/就行了
 
-Occupy et selvage squid, pug brunch blog nesciunt hashtag mumblecore skateboard yr kogi. Ugh small batch swag four loko. Fap post-ironic qui tote bag farm-to-table american apparel scenester keffiyeh vero, swag non pour-over gentrify authentic pitchfork. Schlitz scenester lo-fi voluptate, tote bag irony bicycle rights pariatur vero Vice freegan wayfarers exercitation nisi shoreditch. Chambray tofu vero sed. Street art swag literally leggings, Cosby sweater mixtape PBR lomo Banksy non in pitchfork ennui McSweeney's selfies. Odd Future Banksy non authentic.
+       如果上面出错，去网上找找教程吧，ruby环境的搭建和gem的安装教程还是蛮多的，基本google一下遍地都是。
 
-Aliquip enim artisan dolor post-ironic. Pug tote bag Marfa, deserunt pour-over Portland wolf eu odio intelligentsia american apparel ugh ea. Sunt viral et, 3 wolf moon gastropub pug id. Id fashion axe est typewriter, mlkshk Portland art party aute brunch. Sint pork belly Cosby sweater, deep v mumblecore kitsch american apparel. Try-hard direct trade tumblr sint skateboard. Adipisicing bitters excepteur biodiesel, pickled gastropub aute veniam.
+- gem 安装jekyll
+
+       gem install jekyll
+
+##构建jekyll博客系统
+
+    构建一个博客系统有多种方式：
+       1.手动生jekyll文件目录，并编写博客，完全自己定制
+       2.找一份框架修改后使用
+       3.从GitHub上fork别人的博客代码，在其中添加自己的文章
+
+
+- 如果选择 2, 那么  jekyll-bootstrap 是一个选择。 如果选择 3, 那么自己Google一下  github.io 博客  能找到不少博客,去fork,然后修改一下就好。 如果选择 1, 那么可以好好看看后文的内容。
+
+- 机制一 简单地说，你在 GitHub 上有一个账号，名为 username (任意)， 有一个项目，名为  username.github.io (固定格式，username与账号名一致)， 项目分支名为  master (固定)，这个分支有着类似下面的 目录结构:
+
+            .
+        ├── index.html
+        ├── _config.yml
+        ├── assets
+        │   ├── blog-images
+        │   ├── css
+        │   ├── fonts
+        │   ├── images
+        │   └── javascripts
+        ├── _includes
+        ├── _layouts
+        ├── _plugins
+        ├── _posts
+        └── _site
+这样，当你访问  http://username.github.io/ 时，GitHub 会使用 Jekyll 解析 用户  username 名下的 username.github.io 项目中，分支为 master 的源代码，为你构建一个静态网站，并将生成的index.html展示给你。
+
+eg. git clone https://github.com/mochj12/jekyll.git
